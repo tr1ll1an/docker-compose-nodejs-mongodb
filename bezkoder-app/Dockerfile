@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:18.12.0-alpine
 
 WORKDIR /bezkoder-app
 COPY package.json .

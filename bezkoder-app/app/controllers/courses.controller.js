@@ -2,37 +2,40 @@ const db = require("../models");
 const Courses = db.courses;
 
 exports.saveAll = (req, res) => {
-
   if (!req.body.length) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
   Courses.insertMany(req.body)
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while retrieving tutorials.",
       });
     });
 
-
   // Save Tutorial in the database
-
-}
+};
 
 function courseModel(body) {
-  const { name, responsible_name, responsible_id, responsible_email, status, start_date,
+  const {
+    name,
+    responsible_name,
+    responsible_id,
+    responsible_email,
+    status,
+    start_date,
     slug,
     id,
     is_paid,
     currency,
     price,
-    count_student } = body
-
+    count_student,
+  } = body;
 
   return new Courses({
     name,
@@ -46,13 +49,11 @@ function courseModel(body) {
     is_paid,
     currency,
     price,
-    count_student
+    count_student,
   });
 }
 
-
 exports.create = (req, res) => {
-
   // Validate request
   if (!req.body.id) {
     res.status(400).send({ message: "Content can not be empty!" });
@@ -61,33 +62,31 @@ exports.create = (req, res) => {
 
   // Create a Tutorial
 
-  var course = courseModel(req.body)
+  var course = courseModel(req.body);
   // Save Tutorial in the database
   course
     .save(course)
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Tutorial."
+          err.message || "Some error occurred while creating the Tutorial.",
       });
     });
 };
 
 exports.findAll = (req, res) => {
   const id = req.query.id;
-  var condition = id ? { id: { $regex: new RegExp(id), $options: "i" } } : {};
-  console.log('Courses get list');
+  var condition = id ? { id } : {};
   Courses.find(condition)
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
+        message: err.message || "Some error occurred while retrieving Courses.",
       });
     });
 };
@@ -95,31 +94,29 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Tutorial.findById(id)
-    .then(data => {
+  Courses.findById(id)
+    .then((data) => {
       if (!data)
-        res.status(404).send({ message: "Not found Tutorial with id " + id });
+        res.status(404).send({ message: "Not found Courses with id " + id });
       else res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res
         .status(500)
-        .send({ message: "Error retrieving Tutorial with id=" + id });
+        .send({ message: "Error retrieving Courses with id=" + id });
     });
 };
 
-
-
 // Find all published Tutorials
-exports.findAllPublished = (req, res) => {
-  Tutorial.find({ published: true })
-    .then(data => {
+exports.findAllPaid = (req, res) => {
+  Courses.find({ is_paid: 1 })
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while retrieving tutorials.",
       });
     });
 };
